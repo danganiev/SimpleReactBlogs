@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Posts from './pages/posts/posts';
 import NewPost from './pages/posts/newPost';
-import ViewPost from './pages/posts/viewPost';
 import EditPost from './pages/posts/editPost';
 
 import { BrowserRouter, Route } from 'react-router-dom'
@@ -12,7 +11,6 @@ ReactDOM.render((
         <div>
             <Route exact path="/" component={Posts} />
             <Route path="/new-post/" component={NewPost} />
-            <Route path="/post/:id/" component={ViewPost} />
             <Route path="/edit-post/:id/" component={EditPost} />
         </div>
     </BrowserRouter>
