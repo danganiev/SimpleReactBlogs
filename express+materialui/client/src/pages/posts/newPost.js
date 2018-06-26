@@ -46,7 +46,7 @@ class NewPost extends React.Component {
                         <Button color="inherit">Save</Button>
                     </Toolbar>
                 </AppBar>
-                <div style={{'height': '800px', 'width':'50%', 'padding-top':'50px', 'margin': '0 auto'}}>
+                <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
                     <ReactQuill style={{'height': '100%'}}></ReactQuill>
                 </div>
                 <Button>Save</Button>

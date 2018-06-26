@@ -38,10 +38,10 @@ function createData(name, firstQuote) {
   return { id, name, firstQuote};
 }
 
-const data = [
-  createData('Who is literally Hitler?', 'I think it might have been Hitler himself. Although...'),
-  createData("10 things you didn't know about beavers eating sausages", "1. They are rare game these days..."),
-];
+// const data = [
+//   createData('Who is literally Hitler?', 'I think it might have been Hitler himself. Although...'),
+//   createData("10 things you didn't know about beavers eating sausages", "1. They are rare game these days..."),
+// ];
 
 function SimpleTable(props) {
   const classes = theme => ({
@@ -65,13 +65,13 @@ function SimpleTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map(n => {
+          {props.posts.map(n => {
             return (
               <TableRow key={n.id}>
                 <TableCell component="th" scope="row">
                   <Link to={"/post/"+n.id}><strong>{n.name}</strong></Link>
                 </TableCell>
-                <TableCell>{n.firstQuote}</TableCell>
+                <TableCell>{n.text}</TableCell>
               </TableRow>
             );
           })}
@@ -83,17 +83,17 @@ function SimpleTable(props) {
 
 class Posts extends React.Component {
     state = {
-        response: ''
+        posts: []
     };
 
     componentDidMount() {
         this.callApi()
-            .then(res => this.setState({ response: res.express }))
+            .then(res => this.setState({ posts: res }))
             .catch(err => console.log(err));
     }
 
     callApi = async () => {
-        const response = await fetch('/api/hello');
+        const response = await fetch('/api/posts');
         const body = await response.json();
 
         if (response.status !== 200) throw Error(body.message);
@@ -120,7 +120,7 @@ class Posts extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <SimpleTable />
+                <SimpleTable posts={this.state.posts} />
             </div>
         );
     }
