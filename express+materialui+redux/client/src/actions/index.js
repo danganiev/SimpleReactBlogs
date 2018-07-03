@@ -11,6 +11,40 @@ export const updatePost = (id, name, text) => ({
     text
 })
 
-export const loadPosts = () => ({
-    type: 'LOAD_POSTS'
+export const changePostName = (name) => ({
+    type: 'CHANGE_POST_NAME',
+    name
 })
+
+export const changePostText = (text) =>({
+    type: 'CHANGE_POST_TEXT',
+    text
+})
+
+export function loadPosts(){
+    return dispatch => fetch('/api/posts')
+        .then(res => res.json())
+        .then(
+            data => dispatch({type: 'LOAD_POSTS_SUCCESS', data}),
+            err => dispatch({type: 'ERROR', error: err})
+        )
+}
+
+export function loadSinglePost(postId){
+    return dispatch => fetch('/api/post/' + postId)
+        .then(res => res.json())
+        .then(
+            data => dispatch({type: 'LOAD_SINGLE_POST_SUCCESS', data}),
+            err => dispatch({type: 'ERROR', error: err})
+        )
+}
+
+// export const loadPostsSuccess = (data) => ({
+//     type: 'LOAD_POSTS_SUCCESS',
+//     data
+// })
+//
+// export const error = (error) => ({
+//     type: 'ERROR',
+//     error
+// })

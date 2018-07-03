@@ -76,31 +76,14 @@ function SimpleTable(props) {
 }
 
 class Posts extends React.Component {
-    // state = {
-    //     posts: []
-    // };
 
     componentDidMount() {
         const { dispatch } = this.props;
-        // this.callApi()
-        //     .then(res => this.setState({ posts: res }))
-        //     .catch(err => console.log(err));
         dispatch(loadPosts())
     }
 
-    // callApi = async () => {
-    //     const response = await fetch('/api/posts');
-    //     const body = await response.json();
-    //
-    //     if (response.status !== 200) throw Error(body.message);
-    //
-    //     return body;
-    // };
-
     render() {
-        const { classes, posts, dispatch } = this.props;
-
-        console.log(this.props);
+        const { classes, posts } = this.props;
 
         return (
             <div className={classes.root}>

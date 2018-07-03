@@ -1,3 +1,14 @@
+/*
+{
+    posts: []
+    currentPost: {
+        name,
+        text
+    }
+    errorMessage: undefined
+}
+*/
+
 const posts = (state = [], action) => {
     switch (action.type){
         case 'CREATE_NEW_POST':
@@ -11,15 +22,39 @@ const posts = (state = [], action) => {
             ]
         case 'UPDATE_POST':
             return state
-        case 'LOAD_POSTS':
-            return [{
-                id: 1232,
-                name: 'Loaded post',
-                text: 'my post'
-            }]
+        case 'LOAD_POSTS_SUCCESS':
+            return action.data
         default:
             return state
     }
 }
 
-export default posts
+const currentPost = (state, action) => {
+    switch (action.type){
+        case 'CHANGE_POST_TEXT':
+            return {
+                name: state.name,
+                text: action.text
+            }
+        case 'CHANGE_POST_NAME':
+            return {
+                name: action.name,
+                text: state.text
+            }
+        case 'LOAD_SINGLE_POST_SUCCESS':
+            return action.data
+        default:
+            return {text:'', name:''}
+    }
+}
+
+const errors = (state = null, action) => {
+    switch (action.type){
+        case 'ERROR':
+            return 'An error happened'
+        default:
+            return state
+    }
+}
+
+export { posts, errors, currentPost }

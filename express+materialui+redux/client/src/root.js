@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Posts from './components/posts';
+import EditPost from './components/editPost'
 
 import { BrowserRouter, Route } from 'react-router-dom'
 
@@ -13,6 +14,7 @@ const Root = ({ store }) =>(
         <BrowserRouter>
             <div>
                 <Route exact path="/" component={Posts} />
+                <Route path="/edit-post/:id/" component={EditPost} />
             </div>
         </BrowserRouter>
     </Provider>

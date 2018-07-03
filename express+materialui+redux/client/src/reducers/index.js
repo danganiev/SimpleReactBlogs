@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
-import posts from './posts'
+import { posts, errors, currentPost } from './posts'
 
 export default combineReducers({
-  posts
+  posts,
+  currentPost,
+  errorMessage: errors
 })
