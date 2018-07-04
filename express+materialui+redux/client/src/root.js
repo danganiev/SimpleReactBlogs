@@ -3,20 +3,21 @@ import React from 'react';
 import Posts from './components/posts';
 import EditPost from './components/editPost'
 
-import { BrowserRouter, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
+
+import { ConnectedRouter } from 'react-router-redux'
 
 import { Provider } from 'react-redux'
 import PropTypes from 'prop-types';
 
-
-const Root = ({ store }) =>(
+const Root = ({ store, history }) =>(
     <Provider store={store}>
-        <BrowserRouter>
+        <ConnectedRouter history={history}>
             <div>
                 <Route exact path="/" component={Posts} />
                 <Route path="/edit-post/:id/" component={EditPost} />
             </div>
-        </BrowserRouter>
+        </ConnectedRouter>
     </Provider>
 )
 

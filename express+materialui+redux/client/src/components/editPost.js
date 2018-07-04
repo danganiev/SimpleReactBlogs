@@ -22,7 +22,8 @@ import { Link } from 'react-router-dom'
 
 import { connect } from 'react-redux'
 
-import { loadSinglePost, changePostName, changePostText, closeError } from '../actions'
+import { loadSinglePost, changePostName, changePostText, closeError,
+         updatePost, deletePost } from '../actions'
 
 
 const styles = theme => ({
@@ -44,22 +45,23 @@ class EditPost extends React.Component {
 
     constructor(props) {
         super(props);
-        // this.getPost = this.getPost.bind(this);
         this.updatePost = this.updatePost.bind(this);
         this.deletePost = this.deletePost.bind(this);
-      }
+    }
 
     componentDidMount(){
         const { dispatch } = this.props;
         dispatch(loadSinglePost(this.props.match.params.id))
     }
 
-    updatePost = () => {
-        // dispatch(updatePost(this.props.match.params.id, ))
+    updatePost = (currentPost) => {
+        const { dispatch } = this.props;
+        dispatch(updatePost(this.props.match.params.id, currentPost.name, currentPost.text))
     }
 
     deletePost = () => {
-        // dispatch(deletePost(this.props.match.params.id))
+        const { dispatch } = this.props;
+        dispatch(deletePost(this.props.match.params.id))
     }
 
     render() {
@@ -74,7 +76,7 @@ class EditPost extends React.Component {
                         </IconButton>
                         <Button color="inherit" onClick={this.deletePost}>Delete</Button>
                         <Input value={currentPost.name} onChange={event => dispatch(changePostName(event.target.value))} />
-                        <Button color="inherit" onClick={this.sendPost}>Save</Button>
+                        <Button color="inherit" onClick={() => this.updatePost(currentPost)}>Save</Button>
                     </Toolbar>
                 </AppBar>
                 <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>

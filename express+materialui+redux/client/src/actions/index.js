@@ -1,15 +1,36 @@
+import { push } from "react-router-redux"
+
 export const createNewPost = (name, text) => ({
     type: 'CREATE_NEW_POST',
     name,
     text
 })
 
-export const updatePost = (id, name, text) => ({
-    type: 'UPDATE_POST',
-    id,
-    name,
-    text
-})
+export function updatePost(id, name, text) {
+    return dispatch => fetch('/api/post/edit/' + id, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name,
+            text
+        })
+    }).then(
+        data => dispatch({type: 'UPDATE_POST_SUCCESS', data}),
+        err => dispatch({type: 'ERROR', error: err})
+    )
+}
+
+export function deletePost(id) {
+    return dispatch => fetch('/api/post/' + id, {
+            method: 'DELETE'
+        }).then(
+            data => dispatch(push('/')),
+            err => dispatch({type: 'ERROR', error: err})
+        )
+}
 
 export const changePostName = (name) => ({
     type: 'CHANGE_POST_NAME',

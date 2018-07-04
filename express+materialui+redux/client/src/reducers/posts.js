@@ -24,8 +24,6 @@ const posts = (state = [], action) => {
                     text: 'Blabla'
                 }
             ]
-        case 'UPDATE_POST':
-            return state
         case 'LOAD_POSTS_SUCCESS':
             return action.data
         default:
@@ -47,6 +45,8 @@ const currentPost = (state, action) => {
             }
         case 'LOAD_SINGLE_POST_SUCCESS':
             return action.data
+        case 'UPDATE_POST_SUCCESS':
+            return state
         default:
             return {text:'', name:''}
     }
