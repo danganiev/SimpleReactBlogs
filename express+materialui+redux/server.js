@@ -25,6 +25,8 @@ app.get('/api/post/:postId', (req, res)=>{
     models.Post.findById(req.params.postId).then(post=>{
         return res.json(post);
     })
+    // res.status(400);
+    // res.send('None shall pass');
 });
 
 app.post('/api/post/edit/:postId', (req, res)=>{

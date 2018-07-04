@@ -1,11 +1,15 @@
 /*
 {
+    ...state
     posts: []
     currentPost: {
         name,
         text
     }
-    errorMessage: undefined
+    error: {
+        showError,
+        message
+    }
 }
 */
 
@@ -48,12 +52,23 @@ const currentPost = (state, action) => {
     }
 }
 
-const errors = (state = null, action) => {
+const errors = (state, action) => {
     switch (action.type){
         case 'ERROR':
-            return 'An error happened'
+            return {
+                showError: true,
+                message: 'Error happened'
+            }
+        case 'CLOSE_ERROR':
+            return {
+                ...state,
+                showError: false,
+            }
         default:
-            return state
+            return {
+                showError: false,
+                message: ''
+            }
     }
 }
 

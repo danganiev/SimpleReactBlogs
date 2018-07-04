@@ -21,6 +21,10 @@ export const changePostText = (text) =>({
     text
 })
 
+export const closeError = () =>({
+    type: 'CLOSE_ERROR'
+})
+
 export function loadPosts(){
     return dispatch => fetch('/api/posts')
         .then(res => res.json())
@@ -38,13 +42,3 @@ export function loadSinglePost(postId){
             err => dispatch({type: 'ERROR', error: err})
         )
 }
-
-// export const loadPostsSuccess = (data) => ({
-//     type: 'LOAD_POSTS_SUCCESS',
-//     data
-// })
-//
-// export const error = (error) => ({
-//     type: 'ERROR',
-//     error
-// })
