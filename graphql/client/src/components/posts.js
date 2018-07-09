@@ -18,10 +18,6 @@ import Paper from '@material-ui/core/Paper';
 
 import { Link } from 'react-router-dom'
 
-import { connect } from 'react-redux'
-
-import { loadPosts } from '../actions'
-
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -78,8 +74,6 @@ function SimpleTable(props) {
 class Posts extends React.Component {
 
     componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch(loadPosts())
     }
 
     render() {
@@ -112,8 +106,4 @@ Posts.propTypes = {
     posts: PropTypes.array.isRequired
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  posts: state.posts
-})
-
-export default connect(mapStateToProps)(withRoot(withStyles(styles)(Posts)));
+export default withRoot(withStyles(styles)(Posts));

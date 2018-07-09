@@ -20,12 +20,6 @@ import ReactQuill from 'react-quill';
 
 import { Link } from 'react-router-dom'
 
-import { connect } from 'react-redux'
-
-import { loadSinglePost, changePostName, changePostText, closeError,
-         updatePost, deletePost } from '../actions'
-
-
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -50,22 +44,16 @@ class EditPost extends React.Component {
     }
 
     componentDidMount(){
-        const { dispatch } = this.props;
-        dispatch(loadSinglePost(this.props.match.params.id))
     }
 
     updatePost = (currentPost) => {
-        const { dispatch } = this.props;
-        dispatch(updatePost(this.props.match.params.id, currentPost.name, currentPost.text))
     }
 
     deletePost = () => {
-        const { dispatch } = this.props;
-        dispatch(deletePost(this.props.match.params.id))
     }
 
     render() {
-        const { classes, dispatch, currentPost, error } = this.props;
+        const { classes, currentPost, error } = this.props;
 
         return (
             <div className={classes.root}>
@@ -75,12 +63,12 @@ class EditPost extends React.Component {
                             <MenuIcon/>
                         </IconButton>
                         <Button color="inherit" onClick={this.deletePost}>Delete</Button>
-                        <Input value={currentPost.name} onChange={event => dispatch(changePostName(event.target.value))} />
+                        <Input value={currentPost.name} onChange={event => {} />
                         <Button color="inherit" onClick={() => this.updatePost(currentPost)}>Save</Button>
                     </Toolbar>
                 </AppBar>
                 <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
-                    <ReactQuill value={currentPost.text} onChange={event => dispatch(changePostText(event))} style={{'height': '100%'}}></ReactQuill>
+                    <ReactQuill value={currentPost.text} onChange={event => {}} style={{'height': '100%'}}></ReactQuill>
                 </div>
                 <Button>Save</Button>
                 <Dialog open={error.showError}
@@ -92,7 +80,7 @@ class EditPost extends React.Component {
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={() => dispatch(closeError())} color="primary" autoFocus>
+                    <Button onClick={() => {}} color="primary" autoFocus>
                       OK
                     </Button>
                   </DialogActions>
@@ -107,9 +95,4 @@ EditPost.propTypes = {
     match: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  currentPost: state.currentPost,
-  error: state.error
-})
-
-export default connect(mapStateToProps)(withRoot(withStyles(styles)(EditPost)));
+export default withRoot(withStyles(styles)(EditPost));

@@ -64,7 +64,8 @@ const typeDefs = gql`
 
     type Mutation {
         addPost(name: String!, text: String): ResultMessage
-        updatePost(id:Int, name: String!, text:String): ResultMessage
+        updatePost(id:Int!, name: String!, text:String): ResultMessage
+        deletePost(id:Int!): ResultMessage
     }
 `
 const typeDefsPost = gql`
@@ -97,7 +98,29 @@ const resolvers = {
     Mutation: {
         addPost(obj, {name, text}){
             const post = models.Post.create({name: name, text:text});
-            return {success:true}
+            return {success: true}
+        },
+        updatePost(obj, {id, name, text}){
+            models.Post.findById(id).then(post=>{
+                post.name = name;
+                post.text = text;
+
+                post.save().then(() => {
+                    return res.json({success: true})
+                })
+            })
+            return {success: true}
+        },
+        deletePost(obj, {id}){
+            const result = models.Post.findById(id).then(post=>{
+                return post.destroy().then(()=>{
+                    return {success: true}
+                })
+            }).catch(function(e){
+                return {success: false}
+            })
+
+            return result
         }
     }
 };
