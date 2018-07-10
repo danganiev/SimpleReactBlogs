@@ -20,7 +20,7 @@ import ReactQuill from 'react-quill';
 
 import { Link } from 'react-router-dom'
 
-import { Query } from "react-apollo";
+import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
 const styles = theme => ({
@@ -47,18 +47,14 @@ const GET_POST = gql`
     }
 `;
 
-const TopBar = ({ name, updatePost, deletePost, classes }) => (
-    <AppBar position="static">
-        <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" component={Link} to='/'>
-                <MenuIcon/>
-            </IconButton>
-            <Button color="inherit" onClick={deletePost}>Delete</Button>
-            <Input value={name} onChange={event => {}} />
-            <Button color="inherit" onClick={updatePost}>Save</Button>
-        </Toolbar>
-    </AppBar>
-)
+const DELETE_POST = gql`
+mutation deletePost($id: Int!){
+  deletePost(id: $id)
+  {
+  	success
+  }
+}
+`;
 
 const ErrorBox = ({error}) => (
     <Dialog open={error.showError}
@@ -78,16 +74,10 @@ const ErrorBox = ({error}) => (
 )
 
 class EditPost extends React.Component {
-    constructor(props) {
-        super(props);
-        this.updatePost = this.updatePost.bind(this);
-        this.deletePost = this.deletePost.bind(this);
-    }
-
-    state = {
-        name: '',
-        text: ''
-    };
+    // state = {
+    //     name: '',
+    //     text: ''
+    // };
 
     componentDidMount(){
         const { client, match } = this.props;
@@ -98,25 +88,36 @@ class EditPost extends React.Component {
         })
     }
 
-    updatePost = (currentPost) => {
-    }
-
-    deletePost = () => {
-    }
-
     render() {
         const { classes, currentPost, error, match } = this.props;
 
         return (
             <div className={classes.root}>
-                <Query query={GET_POST} variables={{id:match.params.id}}>
+                <Query query={GET_POST} variables={{id: match.params.id}}>
                     {({loading, error, data}) => {
                         if (loading)
                             return <div>Loading...</div>
+                        if (error)
+                            return <div>Error!</div>
+
+                        let postName;
 
                         return (
                             <div>
-                                <TopBar name={data.post.name} updatePost={this.updatePost} deletePost = {this.deletePost} {...this.props}></TopBar>
+                                <AppBar position="static">
+                                    <Toolbar>
+                                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" component={Link} to='/'>
+                                            <MenuIcon/>
+                                        </IconButton>
+                                        <Mutation mutation={DELETE_POST}>
+                                            {(deletePost, { data }) => (
+                                                <Button color="inherit" onClick={() => {deletePost({variables: {id: match.params.id}})}}>Delete</Button>
+                                            )}
+                                        </Mutation>
+                                        <Input value={data.post.name} onChange={event => {}} ref={ node => postName = node } />
+                                        <Button color="inherit" onClick={()=>{}}>Save</Button>
+                                    </Toolbar>
+                                </AppBar>
                                 <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
                                     <ReactQuill value={data.post.text} onChange={event => {}} style={{'height': '100%'}}></ReactQuill>
                                 </div>

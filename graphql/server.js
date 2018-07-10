@@ -47,8 +47,8 @@ const resolvers = {
             const posts = models.Post.all()
             return posts
         },
-        post(obj, args, context, info) {
-            const post = models.Post.findById(8)
+        post(obj, {id}, context, info) {
+            const post = models.Post.findById(id)
             return post
         }
     },
