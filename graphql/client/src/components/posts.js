@@ -18,6 +18,9 @@ import Paper from '@material-ui/core/Paper';
 
 import { Link } from 'react-router-dom'
 
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -32,6 +35,15 @@ const styles = theme => ({
     },
 });
 
+const GET_POSTS = gql`
+  {
+    posts {
+        id
+        name
+        text
+    }
+  }
+`
 
 function SimpleTable(props) {
   const classes = theme => ({
@@ -55,16 +67,23 @@ function SimpleTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.posts.map(n => {
-            return (
-              <TableRow key={n.id}>
-                <TableCell component="th" scope="row">
-                  <Link to={"/edit-post/"+n.id}><strong>{n.name}</strong></Link>
-                </TableCell>
-                <TableCell>{n.text}</TableCell>
-              </TableRow>
-            );
-          })}
+            <Query query={GET_POSTS}>
+            {({ loading, error, data }) => {
+              if (loading) return <TableRow><TableCell><p>Loading...</p></TableCell></TableRow>;
+              if (error) return <TableRow><TableCell><p>Error :(</p></TableCell></TableRow>;
+
+              return data.posts.map(n => {
+                return (
+                  <TableRow key={n.id}>
+                    <TableCell component="th" scope="row">
+                      <Link to={"/edit-post/"+n.id}><strong>{n.name}</strong></Link>
+                    </TableCell>
+                    <TableCell>{n.text}</TableCell>
+                  </TableRow>
+                );
+              })
+            }}
+          </Query>
         </TableBody>
       </Table>
     </Paper>
@@ -77,7 +96,7 @@ class Posts extends React.Component {
     }
 
     render() {
-        const { classes, posts } = this.props;
+        const { classes } = this.props;
 
         return (
             <div className={classes.root}>
@@ -95,15 +114,14 @@ class Posts extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <SimpleTable posts={posts} />
+                <SimpleTable />
             </div>
         );
     }
 }
 
 Posts.propTypes = {
-    classes: PropTypes.object.isRequired,
-    posts: PropTypes.array.isRequired
+    classes: PropTypes.object.isRequired
 };
 
 export default withRoot(withStyles(styles)(Posts));

@@ -20,6 +20,9 @@ import ReactQuill from 'react-quill';
 
 import { Link } from 'react-router-dom'
 
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -34,16 +37,65 @@ const styles = theme => ({
     },
 });
 
+const GET_POST = gql`
+    query post($id: Int!){
+        post(id: $id)
+        {
+            name,
+            text
+        }
+    }
+`;
+
+const TopBar = ({ name, updatePost, deletePost, classes }) => (
+    <AppBar position="static">
+        <Toolbar>
+            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" component={Link} to='/'>
+                <MenuIcon/>
+            </IconButton>
+            <Button color="inherit" onClick={deletePost}>Delete</Button>
+            <Input value={name} onChange={event => {}} />
+            <Button color="inherit" onClick={updatePost}>Save</Button>
+        </Toolbar>
+    </AppBar>
+)
+
+const ErrorBox = ({error}) => (
+    <Dialog open={error.showError}
+      aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+      <DialogTitle id="alert-dialog-title">{ error.message }</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          { error.message }
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => {}} color="primary" autoFocus>
+          OK
+        </Button>
+      </DialogActions>
+    </Dialog>
+)
 
 class EditPost extends React.Component {
-
     constructor(props) {
         super(props);
         this.updatePost = this.updatePost.bind(this);
         this.deletePost = this.deletePost.bind(this);
     }
 
+    state = {
+        name: '',
+        text: ''
+    };
+
     componentDidMount(){
+        const { client, match } = this.props;
+
+        const { data } = client.query({
+            query: GET_POST,
+            variables: { id: match.params.id }
+        })
     }
 
     updatePost = (currentPost) => {
@@ -53,38 +105,29 @@ class EditPost extends React.Component {
     }
 
     render() {
-        const { classes, currentPost, error } = this.props;
+        const { classes, currentPost, error, match } = this.props;
 
         return (
             <div className={classes.root}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" component={Link} to='/'>
-                            <MenuIcon/>
-                        </IconButton>
-                        <Button color="inherit" onClick={this.deletePost}>Delete</Button>
-                        <Input value={currentPost.name} onChange={event => {} />
-                        <Button color="inherit" onClick={() => this.updatePost(currentPost)}>Save</Button>
-                    </Toolbar>
-                </AppBar>
-                <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
-                    <ReactQuill value={currentPost.text} onChange={event => {}} style={{'height': '100%'}}></ReactQuill>
-                </div>
-                <Button>Save</Button>
-                <Dialog open={error.showError}
-                  aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-                  <DialogTitle id="alert-dialog-title">{ error.message }</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                      { error.message }
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={() => {}} color="primary" autoFocus>
-                      OK
-                    </Button>
-                  </DialogActions>
-                </Dialog>
+                <Query query={GET_POST} variables={{id:match.params.id}}>
+                    {({loading, error, data}) => {
+                        if (loading)
+                            return <div>Loading...</div>
+
+                        return (
+                            <div>
+                                <TopBar name={data.post.name} updatePost={this.updatePost} deletePost = {this.deletePost} {...this.props}></TopBar>
+                                <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
+                                    <ReactQuill value={data.post.text} onChange={event => {}} style={{'height': '100%'}}></ReactQuill>
+                                </div>
+                                <Button>Save</Button>
+                                {
+                                    error && <ErrorBox error={error}></ErrorBox>
+                                }
+                            </div>
+                        )
+                    }}
+                </Query>
             </div>
         );
     }
