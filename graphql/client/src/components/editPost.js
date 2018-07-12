@@ -49,12 +49,17 @@ const GET_POST = gql`
 
 const DELETE_POST = gql`
 mutation deletePost($id: Int!){
-  deletePost(id: $id)
-  {
+  deletePost(id: $id){
   	success
   }
-}
-`;
+}`;
+
+const EDIT_POST = gql`
+mutation updatePost($id:Int!, $name:String!, $text:String){
+    updatePost(id: $id, name: $name, text: $text){
+        success
+    }
+}`;
 
 const ErrorBox = ({error}) => (
     <Dialog open={error.showError}
@@ -74,11 +79,6 @@ const ErrorBox = ({error}) => (
 )
 
 class EditPost extends React.Component {
-    // state = {
-    //     name: '',
-    //     text: ''
-    // };
-
     componentDidMount(){
         const { client, match } = this.props;
 
@@ -100,7 +100,7 @@ class EditPost extends React.Component {
                         if (error)
                             return <div>Error!</div>
 
-                        let postName;
+                        let postName, postEditor;
 
                         return (
                             <div>
@@ -110,16 +110,37 @@ class EditPost extends React.Component {
                                             <MenuIcon/>
                                         </IconButton>
                                         <Mutation mutation={DELETE_POST}>
-                                            {(deletePost, { data }) => (
-                                                <Button color="inherit" onClick={() => {deletePost({variables: {id: match.params.id}})}}>Delete</Button>
+                                            {(deletePost, { data, error }) => (
+                                                <span>
+                                                    <Button color="inherit" onClick={() => {deletePost({variables: {id: match.params.id}})}}>Delete</Button>
+                                                    {
+                                                        error && <ErrorBox error={error}></ErrorBox>
+                                                    }
+                                                </span>
                                             )}
                                         </Mutation>
-                                        <Input value={data.post.name} onChange={event => {}} ref={ node => postName = node } />
-                                        <Button color="inherit" onClick={()=>{}}>Save</Button>
+                                        <Input defaultValue={data.post.name} ref={ node => postName = node } />
+                                        <Mutation mutation={EDIT_POST}>
+                                            {(updatePost, { data, error }) => (
+                                                <span>
+                                                    <Button color="inherit" onClick={() => {
+                                                        debugger;
+                                                        updatePost({variables: {
+                                                            id: match.params.id,
+                                                            name: postName.value,
+                                                            text: postEditor.value
+                                                        }})
+                                                    }}>Save</Button>
+                                                    {
+                                                        error && <ErrorBox error={error}></ErrorBox>
+                                                    }
+                                                </span>
+                                            )}
+                                        </Mutation>
                                     </Toolbar>
                                 </AppBar>
                                 <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
-                                    <ReactQuill value={data.post.text} onChange={event => {}} style={{'height': '100%'}}></ReactQuill>
+                                    <ReactQuill value={data.post.text} style={{'height': '100%'}} ref={node => postEditor = node}></ReactQuill>
                                 </div>
                                 <Button>Save</Button>
                                 {

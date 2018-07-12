@@ -18,7 +18,7 @@ import Paper from '@material-ui/core/Paper';
 
 import { Link } from 'react-router-dom'
 
-import { Query } from "react-apollo";
+import { Query, graphql } from "react-apollo";
 import gql from "graphql-tag";
 
 const styles = theme => ({
@@ -45,7 +45,9 @@ const GET_POSTS = gql`
   }
 `
 
-function SimpleTable(props) {
+const withGetPostsQuery = graphql(GET_POSTS)
+
+function SimpleTable({data}) {
   const classes = theme => ({
       root: {
         width: '100%',
@@ -67,28 +69,32 @@ function SimpleTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-            <Query query={GET_POSTS}>
-            {({ loading, error, data }) => {
-              if (loading) return <TableRow><TableCell><p>Loading...</p></TableCell></TableRow>;
-              if (error) return <TableRow><TableCell><p>Error :(</p></TableCell></TableRow>;
+            {(() => {
+                if (data.loading){
+                    return <TableRow><TableCell><p>Loading...</p></TableCell></TableRow>
+                }
+                if (data.error){
+                    return <TableRow><TableCell><p>Error :(</p></TableCell></TableRow>
+                }
 
-              return data.posts.map(n => {
-                return (
-                  <TableRow key={n.id}>
-                    <TableCell component="th" scope="row">
-                      <Link to={"/edit-post/"+n.id}><strong>{n.name}</strong></Link>
-                    </TableCell>
-                    <TableCell>{n.text}</TableCell>
-                  </TableRow>
-                );
-              })
-            }}
-          </Query>
+                return data.posts.map(n => {
+                    return (
+                      <TableRow key={n.id}>
+                        <TableCell component="th" scope="row">
+                          <Link to={"/edit-post/"+n.id}><strong>{n.name}</strong></Link>
+                        </TableCell>
+                        <TableCell>{n.text}</TableCell>
+                      </TableRow>
+                    );
+                  })
+            })()}
         </TableBody>
       </Table>
     </Paper>
   );
 }
+
+const SimpleTableWithData = withGetPostsQuery(SimpleTable)
 
 class Posts extends React.Component {
 
@@ -114,7 +120,7 @@ class Posts extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <SimpleTable />
+                <SimpleTableWithData />
             </div>
         );
     }
