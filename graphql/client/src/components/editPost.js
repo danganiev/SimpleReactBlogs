@@ -115,20 +115,20 @@ class EditPost extends React.Component {
                                             {client => (
                                                 <Input value={post.name} onChange={(event) => {
                                                     client.writeQuery({
-                                                      query: gql`
-                                                        {
-                                                          post(id: $id) {
-                                                              id
-                                                              name
-                                                          }
-                                                        }
+                                                        query: gql`
+                                                            {
+                                                                post(id: $id) {
+                                                                    id
+                                                                    name
+                                                                }
+                                                            }
                                                       `,
                                                       data: {
-                                                        post: {
-                                                            id: match.params.id,
-                                                            name: event.target.value,
-                                                            __typename: 'Post'
-                                                        },
+                                                          post: {
+                                                                id: match.params.id,
+                                                                name: event.target.value,
+                                                                __typename: 'Post'
+                                                          },
                                                       },
                                                       variables: {
                                                           id: match.params.id
@@ -162,18 +162,18 @@ class EditPost extends React.Component {
                                                 client.writeQuery({
                                                   query: gql`
                                                     {
-                                                      post(id: $id) {
-                                                          id
-                                                          text
-                                                      }
+                                                        post(id: $id) {
+                                                            id
+                                                            text
+                                                        }
                                                     }
                                                   `,
                                                   data: {
-                                                    post: {
-                                                        id: match.params.id,
-                                                        text: html,
-                                                        __typename: 'Post'
-                                                    },
+                                                      post: {
+                                                          id: match.params.id,
+                                                          text: html,
+                                                          __typename: 'Post'
+                                                      },
                                                   },
                                                   variables: {
                                                       id: match.params.id
