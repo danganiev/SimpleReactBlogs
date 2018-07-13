@@ -104,7 +104,7 @@ class EditPost extends React.Component {
                                         <Mutation mutation={DELETE_POST}>
                                             {(deletePost, { data, error }) => (
                                                 <span>
-                                                    <Button color="inherit" onClick={() => {deletePost({variables: {id: match.params.id}})}}>Delete</Button>
+                                                    <Button color="inherit" onClick={() => {deletePost({variables: {id: match.params.id}})}}>Delete </Button>
                                                     {
                                                         error && <ErrorBox error={error}></ErrorBox>
                                                     }
