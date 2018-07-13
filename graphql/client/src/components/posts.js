@@ -18,7 +18,7 @@ import Paper from '@material-ui/core/Paper';
 
 import { Link } from 'react-router-dom'
 
-import { Query, graphql } from "react-apollo";
+import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 
 const styles = theme => ({

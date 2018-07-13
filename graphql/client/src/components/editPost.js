@@ -20,7 +20,7 @@ import ReactQuill from 'react-quill';
 
 import { Link } from 'react-router-dom'
 
-import { Query, Mutation } from "react-apollo";
+import { Query, Mutation, ApolloConsumer } from "react-apollo";
 import gql from "graphql-tag";
 
 const styles = theme => ({
@@ -79,28 +79,17 @@ const ErrorBox = ({error}) => (
 )
 
 class EditPost extends React.Component {
-    componentDidMount(){
-        const { client, match } = this.props;
-
-        const { data } = client.query({
-            query: GET_POST,
-            variables: { id: match.params.id }
-        })
-    }
-
     render() {
         const { classes, currentPost, error, match } = this.props;
 
         return (
             <div className={classes.root}>
                 <Query query={GET_POST} variables={{id: match.params.id}}>
-                    {({loading, error, data}) => {
+                    {({loading, error, data: {post}}) => {
                         if (loading)
                             return <div>Loading...</div>
                         if (error)
                             return <div>Error!</div>
-
-                        let postName, postEditor;
 
                         return (
                             <div>
@@ -119,16 +108,40 @@ class EditPost extends React.Component {
                                                 </span>
                                             )}
                                         </Mutation>
-                                        <Input defaultValue={data.post.name} ref={ node => postName = node } />
+                                        <ApolloConsumer>
+                                            {client => (
+                                                <Input value={post.name} onChange={(event) => {
+                                                    client.writeQuery({
+                                                      query: gql`
+                                                        {
+                                                          post(id: $id) {
+                                                              id
+                                                              name
+                                                          }
+                                                        }
+                                                      `,
+                                                      data: {
+                                                        post: {
+                                                            id: match.params.id,
+                                                            name: event.target.value,
+                                                            __typename: 'Post'
+                                                        },
+                                                      },
+                                                      variables: {
+                                                          id: match.params.id
+                                                      }
+                                                    });
+                                                }}/>
+                                            )}
+                                        </ApolloConsumer>
                                         <Mutation mutation={EDIT_POST}>
                                             {(updatePost, { data, error }) => (
                                                 <span>
                                                     <Button color="inherit" onClick={() => {
-                                                        debugger;
                                                         updatePost({variables: {
                                                             id: match.params.id,
-                                                            name: postName.value,
-                                                            text: postEditor.value
+                                                            name: post.name,
+                                                            text: post.text
                                                         }})
                                                     }}>Save</Button>
                                                     {
@@ -140,7 +153,7 @@ class EditPost extends React.Component {
                                     </Toolbar>
                                 </AppBar>
                                 <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
-                                    <ReactQuill value={data.post.text} style={{'height': '100%'}} ref={node => postEditor = node}></ReactQuill>
+                                    <ReactQuill defaultValue={post.text} style={{'height': '100%'}}></ReactQuill>
                                 </div>
                                 <Button>Save</Button>
                                 {

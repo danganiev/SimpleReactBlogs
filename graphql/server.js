@@ -63,7 +63,7 @@ const resolvers = {
                 post.text = text;
 
                 post.save().then(() => {
-                    return res.json({success: true})
+                    return {success: true}
                 })
             })
             return {success: true}
