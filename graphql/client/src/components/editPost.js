@@ -57,7 +57,9 @@ mutation deletePost($id: Int!){
 const EDIT_POST = gql`
 mutation updatePost($id:Int!, $name:String!, $text:String){
     updatePost(id: $id, name: $name, text: $text){
-        success
+        id,
+        name,
+        text
     }
 }`;
 
@@ -79,6 +81,7 @@ const ErrorBox = ({error}) => (
 )
 
 class EditPost extends React.Component {
+
     render() {
         const { classes, currentPost, error, match } = this.props;
 
@@ -153,7 +156,32 @@ class EditPost extends React.Component {
                                     </Toolbar>
                                 </AppBar>
                                 <div style={{'height': '800px', 'width':'50%', 'paddingTop':'50px', 'margin': '0 auto'}}>
-                                    <ReactQuill defaultValue={post.text} style={{'height': '100%'}}></ReactQuill>
+                                    <ApolloConsumer>
+                                        {client => (
+                                            <ReactQuill value={post.text} style={{'height': '100%'}} onChange={(html) => {
+                                                client.writeQuery({
+                                                  query: gql`
+                                                    {
+                                                      post(id: $id) {
+                                                          id
+                                                          text
+                                                      }
+                                                    }
+                                                  `,
+                                                  data: {
+                                                    post: {
+                                                        id: match.params.id,
+                                                        text: html,
+                                                        __typename: 'Post'
+                                                    },
+                                                  },
+                                                  variables: {
+                                                      id: match.params.id
+                                                  }
+                                                });
+                                            }}/>
+                                        )}
+                                    </ApolloConsumer>
                                 </div>
                                 <Button>Save</Button>
                                 {
