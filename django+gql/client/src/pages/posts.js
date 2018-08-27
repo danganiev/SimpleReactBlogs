@@ -4,13 +4,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Link } from 'react-router-dom'
-import { Button } from 'semantic-ui-react'
 
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 import Header from '../components/Header'
-
-import '../App.css'
 
 const GET_POSTS = gql`
   {

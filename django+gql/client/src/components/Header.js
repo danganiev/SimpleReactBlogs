@@ -1,19 +1,51 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react'
-// import headerStyles from '../styles/header.module.css'
+import styled, { css } from 'styled-components'
 import "../styles/header.css"
 
+const Header = styled.div`
+    overflow: hidden;
+    background-color: #f1f1f1;
+    padding: 20px 10px;
+`
 
-export default function Header(){
+const HeaderButton = styled.a`
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+
+    &:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    ${props => props.active && css`
+        background-color: dodgerblue;
+        color: white;
+    `}
+`
+
+const PureButton = styled.a.attrs({
+    className: "pure-button"
+})``
+
+const HeaderLogo = styled.a`
+    font-size: 25px;
+    font-weight: bold;
+`
+
+export default function HeaderDiv(){
 return (
-    <div className="header">
-        <a href="#default" className="logo">CompanyLogo</a>
+    <Header>
+        <HeaderLogo>CompanyLogo</HeaderLogo>
         <div className="headerRight">
-            <a className="active" href="#home">Home</a>
-            <a href="#contact">Contact</a>
-            <Button>
-                home page
-            </Button>
+            <HeaderButton active>Home</HeaderButton>
+            <HeaderButton>Contact</HeaderButton>
+            <PureButton>Contact</PureButton>
         </div>
-    </div>
+    </Header>
 )}

@@ -6,7 +6,6 @@ import { ApolloProvider } from "react-apollo"
 import { InMemoryCache } from "apollo-cache-inmemory"
 
 import Root from './root'
-import App from './App'
 
 const history = createBrowserHistory()
 
@@ -18,7 +17,6 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-    // <App></App>,
     <ApolloProvider client={client}>
         <Root history={history} client={client} />
     </ApolloProvider>,
